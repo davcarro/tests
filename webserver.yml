@@ -1,0 +1,28 @@
+# webserver.yml
+---
+- name: Configurazione del server web
+  hosts: AutoScalingGroup
+  become: true
+  tasks:
+    - name: Aggiorna i pacchetti
+      yum:
+        name: "*"
+        state: latest
+
+    - name: Installa httpd e php
+      yum:
+        name:
+          - httpd
+          - php
+        state: present
+
+    - name: Avvia e abilita httpd
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: Creazione del file phpinfo.php
+      copy:
+        content: "<?php phpinfo(); ?>"
+        dest: /var/www/html/phpinfo.php
